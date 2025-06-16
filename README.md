@@ -19,7 +19,7 @@ This is a professional demonstration of our Italian Medical Named Entity Recogni
 
 ### 🚀 Try the Live Demo
 
-[**🔗 Access Live Demo Here**](https://your-app-name.streamlit.app)
+[**🔗 Access Live Demo Here**](https://new-medical-italian.streamlit.app)
 
 ## 🏆 Key Capabilities
 
@@ -85,7 +85,7 @@ Developed specifically for the Italian healthcare sector, our NER system address
 ### Run Locally
 
 ```bash
-git clone https://github.com/your-username/new-medical-italian.git
+git clone https://github.com/NinoF841/new-medical-italian.git
 cd new-medical-italian
 pip install -r requirements.txt
 streamlit run app.py
