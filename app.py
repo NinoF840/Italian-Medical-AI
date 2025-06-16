@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 
 # Configure page
 st.set_page_config(
-    page_title="Italian Medical NER - Professional Demo",
+    page_title="New Medical Italian",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -232,7 +232,7 @@ def main():
     # Header
     st.markdown("""
     <div class="demo-header">
-        <h1>🏥 Italian Medical NER - Professional Demo</h1>
+        <h1>🏥 New Medical Italian</h1>
         <p style="font-size: 1.2em; margin-top: 1rem;">
             Advanced AI-Powered Medical Entity Recognition for Italian Healthcare
         </p>
@@ -453,7 +453,7 @@ def main():
     # Demo watermark
     st.markdown("""
     <div class="demo-watermark">
-        💻 Demo Version - Italian Medical NER<br>
+        💻 Demo Version - New Medical Italian<br>
         © 2025 - Professional AI Solution
     </div>
     """, unsafe_allow_html=True)

@@ -1,4 +1,4 @@
-# 🏥 Italian Medical NER - Professional Demo
+# 🏥 New Medical Italian
 
 **Advanced AI-Powered Medical Entity Recognition for Italian Healthcare**
 
@@ -47,7 +47,7 @@ This demonstration version includes:
 
 **Full Version offers unlimited processing, custom entity types, real-time API access, and advanced analytics.**
 
-## 🏥 About Italian Medical NER
+## 🏥 About New Medical Italian
 
 Developed specifically for the Italian healthcare sector, our NER system addresses the unique challenges of Italian medical language processing. Unlike generic multilingual models, our solution provides:
 
@@ -85,8 +85,8 @@ Developed specifically for the Italian healthcare sector, our NER system address
 ### Run Locally
 
 ```bash
-git clone https://github.com/your-username/italian-medical-ner-demo.git
-cd italian-medical-ner-demo
+git clone https://github.com/your-username/new-medical-italian.git
+cd new-medical-italian
 pip install -r requirements.txt
 streamlit run app.py
 ```
