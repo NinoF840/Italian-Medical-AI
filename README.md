@@ -2,7 +2,7 @@
 
 **Advanced AI-Powered Medical Entity Recognition for Italian Healthcare**
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://new-medical-italian.streamlit.app)
 
 ## 🎯 About This Demo
 
