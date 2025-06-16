@@ -85,8 +85,8 @@ Developed specifically for the Italian healthcare sector, our NER system address
 ### Run Locally
 
 ```bash
-git clone https://github.com/NinoF840/new-medical-italian.git
-cd new-medical-italian
+git clone https://github.com/NinoF840/Italian-Medical-AI.git
+cd Italian-Medical-AI
 pip install -r requirements.txt
 streamlit run app.py
 ```
