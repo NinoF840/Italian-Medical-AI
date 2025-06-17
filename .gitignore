@@ -57,3 +57,23 @@ Thumbs.db
 .env.test.local
 .env.production.local
 
+# PyInstaller
+*.spec
+*.exe
+*.pkg
+*.toc
+*.pyz
+*.pyc
+base_library.zip
+qt.conf
+xref-*.html
+warn-*.txt
+
+# Printer files
+Brother*
+
+# Batch/PowerShell scripts
+launch_*.bat
+run_*.bat
+run_*.ps1
+

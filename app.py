@@ -433,12 +433,12 @@ def main():
         # Contact information
         st.subheader("📞 Contact Information")
         st.markdown("""
-        **Email:** contact@ninomedical.ai  
+        **Email:** ninomedical.ai@gmail.com  
         **Phone:** +39 (Available on request)  
         **LinkedIn:** NinoF840 - Medical AI Research  
         
         **Response Time:** < 4 hours  
-        **Demo Availability:** Same day  
+        **Demo Availability:** Same day
         """)
     
     # Footer with watermark and CTA

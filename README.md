@@ -68,7 +68,7 @@ Developed specifically for the Italian healthcare sector, our NER system address
 
 **Ready for the full version?**
 
-- 📧 **Email**: contact@ninomedical.ai
+- 📧 **Email**: ninomedical.ai@gmail.com
 - 💼 **LinkedIn**: [Professional Profile]
 - 📞 **Phone**: +39 [Your Number]
 - 🌐 **Website**: [Your Website]
