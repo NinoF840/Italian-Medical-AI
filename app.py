@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 from functools import lru_cache
 import gc
 
-# Configure page
+# Configure page - Updated for redeploy
 st.set_page_config(
     page_title="New Medical Italian",
     page_icon="🏥",
