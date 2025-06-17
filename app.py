@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import re
 from typing import Dict, List, Optional
 import streamlit.components.v1 as components
+from functools import lru_cache
+import gc
 
 # Configure page
 st.set_page_config(
@@ -16,9 +18,10 @@ st.set_page_config(
 )
 
 # Google Analytics 4 and Conversion Tracking
-def inject_analytics():
-    """Inject Google Analytics 4, Google Ads, and Facebook Pixel tracking"""
-    analytics_code = """
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def get_analytics_code():
+    """Get cached analytics code to avoid regenerating on every page load"""
+    return """
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
     <script>
@@ -117,7 +120,7 @@ def inject_analytics():
             // Facebook Pixel
             fbq('track', 'Contact', {
                 content_name: 'Sales Contact',
-                content_category': 'High Intent',
+                content_category: 'High Intent',
                 value: 100.00,
                 currency: 'EUR'
             });
@@ -136,7 +139,7 @@ def inject_analytics():
             // Facebook Pixel
             fbq('track', 'ViewContent', {
                 content_name: 'Upgrade Prompt',
-                content_category': plan,
+                content_category: plan,
                 value: 0.00,
                 currency: 'EUR'
             });
@@ -158,18 +161,37 @@ def inject_analytics():
         }
     </script>
     """
-    
-    # Replace placeholders with actual IDs (you'll need to update these)
-    analytics_code = analytics_code.replace('GA_MEASUREMENT_ID', 'G-XXXXXXXXXX')  # Your GA4 ID
-    analytics_code = analytics_code.replace('AW-CONVERSION_ID', 'AW-XXXXXXXXX')   # Your Google Ads ID
-    analytics_code = analytics_code.replace('FACEBOOK_PIXEL_ID', 'XXXXXXXXXX')   # Your Facebook Pixel ID
-    analytics_code = analytics_code.replace('CONVERSION_LABEL', 'XXXXXXXXX')     # Your conversion label
-    analytics_code = analytics_code.replace('CONTACT_CONVERSION_LABEL', 'XXXXXXXXX')  # Contact conversion label
-    
-    components.html(analytics_code, height=0)
 
-# Inject analytics on every page load
-inject_analytics()
+def inject_analytics():
+    """Inject Google Analytics with lazy loading and caching"""
+    # Only load analytics once per session
+    if 'analytics_loaded' not in st.session_state:
+        analytics_code = get_analytics_code()
+        
+        # Replace placeholders with actual IDs
+        # TODO: Update these with your actual tracking IDs:
+        # 1. Get GA4 ID from https://analytics.google.com (Format: G-XXXXXXXXXX)
+        # 2. Get Google Ads ID from https://ads.google.com (Format: AW-XXXXXXXXX)
+        # 3. Get Facebook Pixel ID from https://business.facebook.com (Format: numeric)
+        # 4. Get conversion labels from Google Ads conversion actions
+        
+        # TODO: Replace 'YOUR_GA4_MEASUREMENT_ID' with your actual GA4 Measurement ID from Google Analytics
+        # Example: 'G-1234567890' (you'll get this from analytics.google.com)
+        analytics_code = analytics_code.replace('GA_MEASUREMENT_ID', 'YOUR_GA4_MEASUREMENT_ID')  # Replace with your actual GA4 ID
+        
+        # Optional: Replace these if you want Google Ads and Facebook tracking (for now, keeping as placeholders)
+        analytics_code = analytics_code.replace('AW-CONVERSION_ID', 'AW-XXXXXXXXX')   # Replace with your Google Ads ID
+        analytics_code = analytics_code.replace('FACEBOOK_PIXEL_ID', 'XXXXXXXXXX')   # Replace with your Facebook Pixel ID
+        analytics_code = analytics_code.replace('CONVERSION_LABEL', 'XXXXXXXXX')     # Replace with your conversion label
+        analytics_code = analytics_code.replace('CONTACT_CONVERSION_LABEL', 'XXXXXXXXX')  # Replace with contact conversion label
+        
+        components.html(analytics_code, height=0)
+        st.session_state.analytics_loaded = True
+
+# Performance optimization: Only inject analytics once per session
+if 'page_loaded' not in st.session_state:
+    inject_analytics()
+    st.session_state.page_loaded = True
 
 # Custom CSS for professional medical theme
 st.markdown("""
@@ -239,14 +261,23 @@ st.markdown("""
 
 class SecureDemoNER:
     def __init__(self):
-        self.demo_responses = self.load_demo_data()
+        # Lazy load demo data only when needed
+        self._demo_responses = None
         self.usage_limits = {
             'free': {'daily_limit': 5, 'text_max_length': 300},
             'registered': {'daily_limit': 10, 'text_max_length': 500}
         }
+    
+    @property
+    def demo_responses(self):
+        """Lazy load demo responses to improve startup time"""
+        if self._demo_responses is None:
+            self._demo_responses = self.load_demo_data()
+        return self._demo_responses
         
+    @lru_cache(maxsize=1)
     def load_demo_data(self) -> Dict:
-        """Pre-computed demo responses for common Italian medical texts"""
+        """Pre-computed demo responses for common Italian medical texts (cached)"""
         return {
             "Il paziente presenta febbre alta e mal di testa.": {
                 "entities": [
@@ -283,8 +314,9 @@ class SecureDemoNER:
             }
         }
     
+    @lru_cache(maxsize=128)  # Cache up to 128 text processing results
     def simple_ner_demo(self, text: str) -> Dict:
-        """Basic pattern-based NER for demo purposes"""
+        """Basic pattern-based NER for demo purposes (cached)"""
         entities = []
         
         # Simple Italian medical patterns
@@ -333,11 +365,15 @@ class SecureDemoNER:
         return result
     
     def get_usage_count(self, user_id: str) -> int:
-        """Get daily usage count for user"""
+        """Get daily usage count for user with automatic cleanup"""
         if 'usage_tracking' not in st.session_state:
             st.session_state.usage_tracking = {}
         
         today = datetime.now().strftime('%Y-%m-%d')
+        
+        # Clean up old data to prevent memory bloat
+        self._cleanup_old_usage_data()
+        
         if user_id not in st.session_state.usage_tracking:
             st.session_state.usage_tracking[user_id] = {}
         
@@ -354,12 +390,53 @@ class SecureDemoNER:
         
         current_count = st.session_state.usage_tracking[user_id].get(today, 0)
         st.session_state.usage_tracking[user_id][today] = current_count + 1
+        
+        # Trigger garbage collection periodically
+        if current_count % 5 == 0:  # Every 5 requests
+            gc.collect()
+    
+    def _cleanup_old_usage_data(self):
+        """Remove usage data older than 7 days to prevent memory bloat"""
+        if 'usage_tracking' not in st.session_state:
+            return
+        
+        cutoff_date = datetime.now() - timedelta(days=7)
+        cutoff_str = cutoff_date.strftime('%Y-%m-%d')
+        
+        # Clean up old entries
+        for user_id in list(st.session_state.usage_tracking.keys()):
+            user_data = st.session_state.usage_tracking[user_id]
+            dates_to_remove = [
+                date for date in user_data.keys() 
+                if date < cutoff_str
+            ]
+            for date in dates_to_remove:
+                del user_data[date]
+            
+            # Remove empty user entries
+            if not user_data:
+                del st.session_state.usage_tracking[user_id]
+
+@lru_cache(maxsize=64)  # Cache rendered entity HTML
+def render_entities_cached(entities_tuple) -> str:
+    """Render entities with color coding (cached version)"""
+    entities = [{'text': e[0], 'label': e[1], 'confidence': e[2]} for e in entities_tuple]
+    return _render_entities_impl(entities)
 
 def render_entities(entities: List[Dict]) -> str:
     """Render entities with color coding"""
     if not entities:
         return "<p><em>No medical entities detected in the text.</em></p>"
     
+    # Convert to tuple for caching (lists aren't hashable)
+    entities_tuple = tuple(
+        (e.get('text', ''), e.get('label', ''), e.get('confidence', 0))
+        for e in entities
+    )
+    return render_entities_cached(entities_tuple)
+
+def _render_entities_impl(entities: List[Dict]) -> str:
+    """Internal implementation for entity rendering"""
     html_content = ""
     entity_colors = {
         'MEDICATION': 'medication',
