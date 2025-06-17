@@ -5,7 +5,6 @@ import hashlib
 from datetime import datetime, timedelta
 import re
 from typing import Dict, List, Optional
-import streamlit.components.v1 as components
 
 # Configure page
 st.set_page_config(
@@ -14,162 +13,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Google Analytics 4 and Conversion Tracking
-def inject_analytics():
-    """Inject Google Analytics 4, Google Ads, and Facebook Pixel tracking"""
-    analytics_code = """
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID', {
-            'page_title': 'New Medical Italian AI Demo',
-            'page_location': window.location.href,
-            'content_group1': 'Medical AI Demo',
-            'content_group2': 'Italian Healthcare'
-        });
-        
-        // Google Ads Conversion Tracking
-        gtag('config', 'AW-CONVERSION_ID');
-    </script>
-    
-    <!-- Facebook Pixel -->
-    <script>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', 'FACEBOOK_PIXEL_ID');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=FACEBOOK_PIXEL_ID&ev=PageView&noscript=1"
-    /></noscript>
-    
-    <script>
-        // Custom conversion tracking functions
-        function trackDemoStart(email, textLength) {
-            // Google Analytics 4 Event
-            gtag('event', 'demo_started', {
-                'event_category': 'engagement',
-                'event_label': 'medical_ai_demo',
-                'value': textLength,
-                'user_email': email,
-                'demo_type': 'italian_medical_ner'
-            });
-            
-            // Facebook Pixel Event
-            fbq('track', 'Lead', {
-                content_name: 'Medical AI Demo',
-                content_category: 'Healthcare AI',
-                value: 0.00,
-                currency: 'EUR'
-            });
-            
-            console.log('Demo start tracked:', email, textLength);
-        }
-        
-        function trackDemoCompletion(email, entitiesFound, confidence) {
-            // Google Analytics 4 Conversion
-            gtag('event', 'conversion', {
-                'send_to': 'AW-CONVERSION_ID/CONVERSION_LABEL',
-                'event_category': 'conversion',
-                'event_label': 'demo_completed',
-                'value': entitiesFound,
-                'user_email': email,
-                'confidence_score': confidence
-            });
-            
-            // Facebook Pixel Conversion
-            fbq('track', 'CompleteRegistration', {
-                content_name: 'AI Demo Completed',
-                content_category: 'Medical AI',
-                value: 25.00,  // Estimated lead value
-                currency: 'EUR'
-            });
-            
-            console.log('Demo completion tracked:', email, entitiesFound);
-        }
-        
-        function trackContactIntent(email, action) {
-            // Google Analytics 4 High-Value Event
-            gtag('event', 'contact_sales', {
-                'event_category': 'conversion',
-                'event_label': action,
-                'value': 100,  // High-value action
-                'user_email': email
-            });
-            
-            // Google Ads Conversion
-            gtag('event', 'conversion', {
-                'send_to': 'AW-CONVERSION_ID/CONTACT_CONVERSION_LABEL',
-                'value': 100.0,
-                'currency': 'EUR'
-            });
-            
-            // Facebook Pixel
-            fbq('track', 'Contact', {
-                content_name: 'Sales Contact',
-                content_category': 'High Intent',
-                value: 100.00,
-                currency: 'EUR'
-            });
-            
-            console.log('Contact intent tracked:', email, action);
-        }
-        
-        function trackUpgradePrompt(email, plan) {
-            // Google Analytics 4
-            gtag('event', 'upgrade_prompt_shown', {
-                'event_category': 'engagement',
-                'event_label': plan,
-                'user_email': email
-            });
-            
-            // Facebook Pixel
-            fbq('track', 'ViewContent', {
-                content_name: 'Upgrade Prompt',
-                content_category': plan,
-                value: 0.00,
-                currency: 'EUR'
-            });
-        }
-        
-        // Enhanced ecommerce tracking for pricing
-        function trackPricingView(email, plan, price) {
-            gtag('event', 'view_item', {
-                'currency': 'EUR',
-                'value': price,
-                'items': [{
-                    'item_id': plan.toLowerCase().replace(' ', '_'),
-                    'item_name': plan + ' Plan',
-                    'item_category': 'Medical AI Software',
-                    'price': price,
-                    'quantity': 1
-                }]
-            });
-        }
-    </script>
-    """
-    
-    # Replace placeholders with actual IDs (you'll need to update these)
-    analytics_code = analytics_code.replace('GA_MEASUREMENT_ID', 'G-XXXXXXXXXX')  # Your GA4 ID
-    analytics_code = analytics_code.replace('AW-CONVERSION_ID', 'AW-XXXXXXXXX')   # Your Google Ads ID
-    analytics_code = analytics_code.replace('FACEBOOK_PIXEL_ID', 'XXXXXXXXXX')   # Your Facebook Pixel ID
-    analytics_code = analytics_code.replace('CONVERSION_LABEL', 'XXXXXXXXX')     # Your conversion label
-    analytics_code = analytics_code.replace('CONTACT_CONVERSION_LABEL', 'XXXXXXXXX')  # Contact conversion label
-    
-    components.html(analytics_code, height=0)
-
-# Inject analytics on every page load
-inject_analytics()
 
 # Custom CSS for professional medical theme
 st.markdown("""
@@ -451,16 +294,6 @@ def main():
         """, unsafe_allow_html=True)
         
         if st.button("📞 Contact Sales", use_container_width=True):
-            # Track high-value contact intent
-            if user_email:
-                components.html(f"""
-                <script>
-                    if (typeof trackContactIntent !== 'undefined') {{
-                        trackContactIntent('{user_email}', 'Sidebar Contact Sales');
-                    }}
-                </script>
-                """, height=0)
-            
             st.success("Redirecting to contact form...")
             st.balloons()
     
@@ -502,15 +335,6 @@ def main():
             elif not user_text.strip():
                 st.error("❌ Please enter some text to analyze.")
             else:
-                # Track demo start
-                components.html(f"""
-                <script>
-                    if (typeof trackDemoStart !== 'undefined') {{
-                        trackDemoStart('{user_email}', {len(user_text)});
-                    }}
-                </script>
-                """, height=0)
-                
                 user_id = hashlib.md5(user_email.encode()).hexdigest()[:8]
                 usage_count = demo_ner.get_usage_count(user_id)
                 daily_limit = demo_ner.usage_limits['registered']['daily_limit']
@@ -536,15 +360,6 @@ def main():
                     if "error" in result:
                         st.error(result["error"])
                         if result.get("upgrade_required"):
-                            # Track upgrade prompt shown
-                            components.html(f"""
-                            <script>
-                                if (typeof trackUpgradePrompt !== 'undefined') {{
-                                    trackUpgradePrompt('{user_email}', 'Text Length Limit');
-                                }}
-                            </script>
-                            """, height=0)
-                            
                             st.markdown("""
                             <div class="upgrade-prompt">
                                 <h3>🚀 Text Too Long for Demo</h3>
@@ -554,18 +369,6 @@ def main():
                     else:
                         # Success!
                         st.success("✅ Analysis Complete!")
-                        
-                        # Track successful demo completion
-                        entities = result.get('entities', [])
-                        avg_conf = sum([e.get('confidence', 0) for e in entities]) / len(entities) if entities else 0
-                        
-                        components.html(f"""
-                        <script>
-                            if (typeof trackDemoCompletion !== 'undefined') {{
-                                trackDemoCompletion('{user_email}', {len(entities)}, {avg_conf:.3f});
-                            }}
-                        </script>
-                        """, height=0)
                         
                         # Display entities
                         entities = result.get('entities', [])
@@ -625,27 +428,17 @@ def main():
             st.markdown(f"**{plan}:** {price}")
         
         if st.button("📞 Schedule Demo Call", use_container_width=True):
-            # Track demo call scheduling
-            if user_email:
-                components.html(f"""
-                <script>
-                    if (typeof trackContactIntent !== 'undefined') {{
-                        trackContactIntent('{user_email}', 'Schedule Demo Call');
-                    }}
-                </script>
-                """, height=0)
-            
             st.success("Demo call scheduled! Check your email.")
         
         # Contact information
         st.subheader("📞 Contact Information")
         st.markdown("""
-        **Email:** ninomedical.ai@gmail.com  
+        **Email:** contact@ninomedical.ai  
         **Phone:** +39 (Available on request)  
         **LinkedIn:** NinoF840 - Medical AI Research  
         
         **Response Time:** < 4 hours  
-        **Demo Availability:** Same day
+        **Demo Availability:** Same day  
         """)
     
     # Footer with watermark and CTA
