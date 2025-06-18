@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-New Medical Italian - Executable Launcher
+Medico-Italiano-IA - Executable Launcher
+Advanced Italian Medical AI for Named Entity Recognition
 This script launches the Streamlit web application.
 """
 
@@ -16,11 +17,12 @@ def open_browser():
     webbrowser.open('http://localhost:8501')
 
 def main():
-    print("🏥 New Medical Italian - Starting Application...")
+    print("🏥 Medico-Italiano-IA - Starting Advanced Medical AI...")
+    print("🤖 Italian Medical Named Entity Recognition System")
     print("📍 Application will open in your default web browser")
     print("🔗 URL: http://localhost:8501")
     print("❌ To stop the application, press Ctrl+C")
-    print("-" * 50)
+    print("-" * 60)
     
     # Get the directory where this script is located
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,7 +41,7 @@ def main():
             "--browser.gatherUsageStats=false"
         ], check=True)
     except KeyboardInterrupt:
-        print("\n🛑 Application stopped by user")
+        print("\n🛑 Medico-Italiano-IA stopped by user")
         timer.cancel()
     except subprocess.CalledProcessError as e:
         print(f"❌ Error running application: {e}")
