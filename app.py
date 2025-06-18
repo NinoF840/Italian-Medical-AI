@@ -11,7 +11,7 @@ import gc
 
 # Configure page - Connection verified 2025-06-17
 st.set_page_config(
-    page_title="New Medical Italian",
+    page_title="Medico-Italiano-IA",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -175,15 +175,12 @@ def inject_analytics():
         # 3. Get Facebook Pixel ID from https://business.facebook.com (Format: numeric)
         # 4. Get conversion labels from Google Ads conversion actions
         
-        # TODO: Replace 'YOUR_GA4_MEASUREMENT_ID' with your actual GA4 Measurement ID from Google Analytics
-        # Example: 'G-1234567890' (you'll get this from analytics.google.com)
-        analytics_code = analytics_code.replace('GA_MEASUREMENT_ID', 'YOUR_GA4_MEASUREMENT_ID')  # Replace with your actual GA4 ID
-        
-        # Optional: Replace these if you want Google Ads and Facebook tracking (for now, keeping as placeholders)
-        analytics_code = analytics_code.replace('AW-CONVERSION_ID', 'AW-XXXXXXXXX')   # Replace with your Google Ads ID
-        analytics_code = analytics_code.replace('FACEBOOK_PIXEL_ID', 'XXXXXXXXXX')   # Replace with your Facebook Pixel ID
-        analytics_code = analytics_code.replace('CONVERSION_LABEL', 'XXXXXXXXX')     # Replace with your conversion label
-        analytics_code = analytics_code.replace('CONTACT_CONVERSION_LABEL', 'XXXXXXXXX')  # Replace with contact conversion label
+        # Disable analytics for demo deployment - remove placeholders that cause issues
+        analytics_code = analytics_code.replace('GA_MEASUREMENT_ID', '')  # Remove placeholder
+        analytics_code = analytics_code.replace('AW-CONVERSION_ID', '')   # Remove placeholder
+        analytics_code = analytics_code.replace('FACEBOOK_PIXEL_ID', '')   # Remove placeholder
+        analytics_code = analytics_code.replace('CONVERSION_LABEL', '')     # Remove placeholder
+        analytics_code = analytics_code.replace('CONTACT_CONVERSION_LABEL', '')  # Remove placeholder
         
         components.html(analytics_code, height=0)
         st.session_state.analytics_loaded = True
@@ -466,7 +463,7 @@ def main():
     # Header
     st.markdown("""
     <div class="demo-header">
-        <h1>🏥 New Medical Italian</h1>
+        <h1>🏥 Medico-Italiano-IA</h1>
         <p style="font-size: 1.2em; margin-top: 1rem;">
             Advanced AI-Powered Medical Entity Recognition for Italian Healthcare
         </p>
@@ -717,7 +714,7 @@ def main():
         # Contact information
         st.subheader("📞 Contact Information")
         st.markdown("""
-        **Email:** ninomedical.ai@gmail.com  
+        **Email:** nino58150@gmail.com  
         **Phone:** +39 (Available on request)  
         **LinkedIn:** NinoF840 - Medical AI Research  
         
@@ -737,7 +734,7 @@ def main():
     # Demo watermark
     st.markdown("""
     <div class="demo-watermark">
-        💻 Demo Version - New Medical Italian<br>
+        💻 Demo Version - Medico-Italiano-IA<br>
         © 2025 - Professional AI Solution
     </div>
     """, unsafe_allow_html=True)
