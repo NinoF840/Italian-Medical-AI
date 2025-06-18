@@ -4,13 +4,28 @@ primaryColor = "#2E8B57"
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F0F8FF"
 textColor = "#262730"
+font = "sans serif"
 
 [server]
 headless = true
 port = 8501
 enableCORS = false
 enableXsrfProtection = false
+maxUploadSize = 200
+runOnSave = false
+allowRunOnSave = false
 
 [browser]
 gatherUsageStats = false
+serverAddress = "0.0.0.0"
+serverPort = 8501
+
+[client]
+caching = true
+displayEnabled = true
+
+[runner]
+magicEnabled = true
+installTracer = false
+fixMatplotlib = true
 
