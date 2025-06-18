@@ -80,13 +80,15 @@ st.markdown('<div class="professional-badge">✅ PROFESSIONAL VERSION - UNLIMITE
 st.markdown('<div class="owner-badge">👨‍💻 OWNER/DEVELOPER VERSION</div>', unsafe_allow_html=True)
 
 # Professional Features
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.success("🚀 **Unlimited Requests**\n\nNo daily limits")
 with col2:
     st.success("📝 **Unlimited Text Length**\n\nProcess any size document") 
 with col3:
-    st.success("🎯 **All Features Enabled**\n\nFull professional capabilities")
+    st.success("🎯 **Advanced AI Model**\n\n95%+ accuracy")
+with col4:
+    st.success("🔒 **Private Instance**\n\nSecure & confidential")
 
 # Override limitation functions for professional use
 def check_usage_limits(email: str) -> tuple[bool, str]:
